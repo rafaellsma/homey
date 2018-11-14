@@ -11,7 +11,7 @@ public class Queue {
     private int sze = 0;
     private int targetStringLength = 10;
 
-    public String genNextId() {
+    private String genNextId() {
         StringBuilder buffer = new StringBuilder(targetStringLength);
         for (int i = 0; i < targetStringLength; i++) {
             int randomLimitedInt = (int) (random.nextFloat() * 16);
