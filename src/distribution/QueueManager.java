@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class QueueManager {
     private HashMap<String, Queue> queues = new HashMap<String, Queue>();
 
-    public QueueManager(String host, int port) {
+    public QueueManager() {
     }
 
     public void createQueue(String queueName) {
