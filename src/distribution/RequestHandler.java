@@ -11,6 +11,7 @@ public class RequestHandler extends Thread {
     QueueManager QM;
 
     RequestHandler(ServerRequestHandler SRH, RequestPacket request, QueueManager QM){
+        super();
         this.SRH = SRH;
         this.request = request;
         this.QM = QM;
