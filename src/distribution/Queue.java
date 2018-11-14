@@ -1,26 +1,55 @@
 package distribution;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 public class Queue {
-    private ArrayList<Message> queue = new ArrayList<Message>();
+    private HashMap<String, Message> messages = new HashMap();
+    private HashMap<String, String> next = new HashMap();
+    private String last = "";
+    private Random random = new Random();
+    private int sze = 0;
+    private int targetStringLength = 10;
+
+    public String genNextId() {
+        StringBuilder buffer = new StringBuilder(targetStringLength);
+        for (int i = 0; i < targetStringLength; i++) {
+            int randomLimitedInt = (int) (random.nextFloat() * 16);
+            if (randomLimitedInt < 10) randomLimitedInt += '0';
+            else randomLimitedInt += 'A' - 10;
+            buffer.append((char) randomLimitedInt);
+        }
+        String generatedString = buffer.toString();
+
+        return generatedString;
+    }
 
     public Queue() {
-
+        next.put(last, "");
     }
 
-    public void enqueue(Message msg) {
-        queue.add(msg);
+    public void push(Message msg) {
+        String nxt = genNextId();
+        next.put(nxt, "");
+        next.put(last, nxt);
+        last = nxt;
+        messages.put(last, msg);
+        sze++;
     }
 
-    public Message dequeue() {
-        Message topo = queue.get(0);
-        queue.remove(0);
+    public String getCurrent() {
+        return last;
+    }
 
-        return topo;
+    public Message get(String s) {
+        return messages.get(s);
+    }
+
+    public String getNext(String s) {
+        return next.get(s);
     }
 
     public int queueSize() {
-        return queue.size();
+        return sze;
     }
 }
