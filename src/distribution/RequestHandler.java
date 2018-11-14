@@ -2,8 +2,12 @@ package distribution;
 
 import infrastructure.ServerRequestHandler;
 
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
 import static distribution.OperationType.GET;
 import static distribution.OperationType.PUT;
+import static distribution.Marshaller.marshall;
 
 public class RequestHandler extends Thread {
     ServerRequestHandler SRH;
@@ -25,7 +29,17 @@ public class RequestHandler extends Thread {
             QM.createQueue(m.getHeader().getDestination());
             QM.receive(m);
         } else if (request.getPacketHeader().getOperation() == GET){
-
+            MessageHeader header = request.getPacketBody().getMessage().getHeader();
+            Message message = QM.send(header);
+            try {
+                SRH.send(marshall(message));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
         } else {
 
         }
