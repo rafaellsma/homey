@@ -19,12 +19,12 @@ public class ServerRequestHandler {
 	private int sentMessageSize;
 	private int receivedMessageSize;
 	
-	public ServerRequestHandler(int port) throws IOException, TimeoutException {
+	public ServerRequestHandler(int port) throws IOException {
 		this.port = port;
 		this.serverSocket = new ServerSocket(port);	
 	}
 
-	public void send(byte[] msg) throws IOException, InterruptedException, TimeoutException {
+	public void send(byte[] msg) throws IOException {
 		outToClient = new DataOutputStream(socket.getOutputStream());
 		
 		sentMessageSize = msg.length;
@@ -33,7 +33,7 @@ public class ServerRequestHandler {
 		outToClient.write(msg, 0, sentMessageSize);
 	}
 
-	public byte[] receive() throws IOException, InterruptedException, TimeoutException {
+	public byte[] receive() throws IOException {
 		socket = serverSocket.accept();
 		inFromClient = new DataInputStream(socket.getInputStream());
 		
