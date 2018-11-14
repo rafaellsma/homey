@@ -13,7 +13,7 @@ public class QueueManager {
     }
 
     public void storeInQueue(Message msg) {
-        queues.get(msg.getHeader()).push(msg);
+        queues.get(msg.getHeader().getDestination()).push(msg);
     }
 
     public boolean isLastMessage(String queueName, String hash) {
