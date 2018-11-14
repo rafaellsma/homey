@@ -23,7 +23,7 @@ public class MessageHeader implements Serializable {
         return hash;
     }
 
-    public set setHash(String hash) {
+    public void setHash(String hash) {
         this.hash = hash;
     }
 }
