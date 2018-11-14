@@ -35,10 +35,6 @@ public class RequestHandler extends Thread {
                 SRH.send(marshall(message));
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
             }
         } else {
 
