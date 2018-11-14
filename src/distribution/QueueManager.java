@@ -16,19 +16,22 @@ public class QueueManager {
         queues.get(msg.getHeader().getDestination()).push(msg);
     }
 
-    public boolean isLastMessage(String queueName, String hash) {
-        return queues.get(queueName).getCurrent() == hash;
+    public boolean isLastMessage(MessageHeader header) {
+        return queues.get(header.getDestination()).getCurrent() == header.getHash();
     }
 
-    public Message getMessage(String queueName, String hash) {
-        Queue queue = queues.get(queueName);
+    public Message getMessage(MessageHeader header) {
+        Queue queue = queues.get(header.getDestination());
 
-        return queue.get(hash);
+        return queue.get(header.getHash());
     }
 
-    public Message getNextMessage(String queueName, String hash) {
-        Queue queue = queues.get(queueName);
-        assert(!isLastMessage(queueName, hash)): "Last message";
+    public Message getNextMessage(MessageHeader header) {
+        String queueName = header.getDestination();
+        String hash = header.getHash();
+        Queue queue = queues.get(header.getDestination());
+        
+        assert(!isLastMessage(header)): "Last message";
         return queue.get(queue.getNext(hash));
     }
 }
