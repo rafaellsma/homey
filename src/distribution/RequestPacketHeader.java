@@ -7,7 +7,7 @@ public class RequestPacketHeader {
         this.operation = operation;
     }
 
-    public String getOperation() {
+    public OperationType getOperation() {
         return operation;
     }
 
