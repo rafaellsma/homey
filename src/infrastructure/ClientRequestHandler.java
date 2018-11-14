@@ -37,7 +37,7 @@ public class ClientRequestHandler {
 		outToServer.flush();
 	}
 
-	public byte[] receive() throws Exception {
+	public byte[] receive() throws IOException {
 		receivedMessageSize = inFromServer.readInt();
         byte[] msgReceived = new byte[receivedMessageSize];
         
