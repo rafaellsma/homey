@@ -23,7 +23,7 @@ public class RequestHandler extends Thread {
         if(request.getPacketHeader().getOperation() == PUT) {
             Message m = request.getPacketBody().getMessage();
             QM.createQueue(m.getHeader().getDestination());
-            QM.storeInQueue(m);
+            QM.receive(m);
         } else if (request.getPacketHeader().getOperation() == GET){
 
         } else {
