@@ -8,7 +8,13 @@ public class ClientTest {
         QueueManagerProxy queueManagerProxy = null;
         try {
             queueManagerProxy = new QueueManagerProxy("queue1");
-            queueManagerProxy.send("dale");
+            queueManagerProxy.send("dale1");
+            queueManagerProxy.send("dale2");
+            queueManagerProxy.send("dale3");
+            String a = queueManagerProxy.receive();
+            String b = queueManagerProxy.receive();
+            System.out.println(a);
+            System.out.println(b);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {

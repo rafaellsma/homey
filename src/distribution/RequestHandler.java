@@ -18,7 +18,6 @@ public class RequestHandler extends Thread {
         this.QM = QM;
     }
 
-    @Override
     public void run() {
         if(request.getPacketHeader().getOperation() == OperationType.PUT) {
             Message m = request.getPacketBody().getMessage();
@@ -54,7 +53,7 @@ public class RequestHandler extends Thread {
             MessageHeader header = request.getPacketBody().getMessage().getHeader();
             QM.createQueue(header.getDestination());
             try {
-                SRH.send(marshall(QM.sendLastMessage(header)));
+                SRH.send(marshall(new ReplyPacket(QM.sendLastMessage(header), OperationType.SUBSCRIBE)));
             } catch (IOException e) {
                 e.printStackTrace();
             }

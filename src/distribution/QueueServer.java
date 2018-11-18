@@ -17,12 +17,14 @@ public class QueueServer {
         this.QM = new QueueManager();
     }
 
+
     public void run() throws IOException, TimeoutException, ClassNotFoundException {
+        ServerRequestHandler SRH = new ServerRequestHandler(port);
+
         while (true) {
-            ServerRequestHandler SRH = new ServerRequestHandler(port);
             RequestPacket requestPacket = (RequestPacket) Marshaller.unmarshall(SRH.receive());
-            Thread handleThread = new RequestHandler(SRH, requestPacket, QM);
-            handleThread.start();
+            RequestHandler handleThread = new RequestHandler(SRH, requestPacket, QM);
+            handleThread.run();
         }
     }
 }
