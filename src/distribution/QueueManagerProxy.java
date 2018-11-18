@@ -31,7 +31,7 @@ public class QueueManagerProxy implements IQueueManager {
     public String receive() throws IOException, InterruptedException, TimeoutException, ClassNotFoundException {
         ClientRequestHandler crh =  new ClientRequestHandler(urlServer, portServer);
 
-        crh.send(Marshaller.marshall(requestPacket("", OperationType.GET)));
+        crh.send(Marshaller.marshall(requestPacket("", OperationType.GETNEXT)));
 
         ReplyPacket reply = (ReplyPacket) Marshaller.unmarshall(crh.receive());
         setHash(reply);
