@@ -27,7 +27,6 @@ public class QueueManager {
     }
 
     public Message sendNext(MessageHeader header) {
-        String queueName = header.getDestination();
         String hash = header.getHash();
         Queue queue = queues.get(header.getDestination());
 

@@ -14,8 +14,7 @@ public class RequestHandler extends Thread {
     RequestPacket request;
     QueueManager QM;
 
-    RequestHandler(ServerRequestHandler SRH, RequestPacket request, QueueManager QM){
-        super();
+    public RequestHandler(ServerRequestHandler SRH, RequestPacket request, QueueManager QM){
         this.SRH = SRH;
         this.request = request;
         this.QM = QM;
@@ -23,21 +22,28 @@ public class RequestHandler extends Thread {
 
     @Override
     public void run() {
-        super.run();
-        if(request.getPacketHeader().getOperation() == PUT) {
+        if(request.getPacketHeader().getOperation() == OperationType.PUT) {
             Message m = request.getPacketBody().getMessage();
-            QM.createQueue(m.getHeader().getDestination());
             QM.receive(m);
+            try {
+                SRH.send(marshall(new ReplyPacket(QM.send(m.getHeader()))));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //TODO ADD REPLY PACKET
         } else if (request.getPacketHeader().getOperation() == GET){
             MessageHeader header = request.getPacketBody().getMessage().getHeader();
             Message message = QM.send(header);
             try {
-                SRH.send(marshall(message));
+                SRH.send(marshall(new ReplyPacket(message)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            //TODO ADD REPLY PACKET
         } else {
-
+            MessageHeader header = request.getPacketBody().getMessage().getHeader();
+            QM.createQueue(header.getDestination());
+            //TODO ADD REPLY PACKET
         }
     }
 }

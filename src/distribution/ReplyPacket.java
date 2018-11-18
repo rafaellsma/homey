@@ -1,8 +1,12 @@
 package distribution;
 
-public class ReplyPacket {
-    private Message message;
+import java.io.Serializable;
 
+public class ReplyPacket implements Serializable {
+    private Message message;
+    public ReplyPacket(Message message){
+        this.message = message;
+    }
     public Message getMessage() {
         return message;
     }

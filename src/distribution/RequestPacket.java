@@ -1,6 +1,8 @@
 package distribution;
 
-public class RequestPacket {
+import java.io.Serializable;
+
+public class RequestPacket implements Serializable {
     private RequestPacketHeader packetHeader;
     private RequestPacketBody packetBody;
 

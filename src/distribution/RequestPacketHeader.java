@@ -1,6 +1,8 @@
 package distribution;
 
-public class RequestPacketHeader {
+import java.io.Serializable;
+
+public class RequestPacketHeader implements Serializable {
     private OperationType operation;
 
     public RequestPacketHeader(OperationType operation) {

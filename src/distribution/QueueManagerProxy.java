@@ -11,10 +11,11 @@ public class QueueManagerProxy implements IQueueManager {
     private int portServer;
     private String hash;
 
-    public QueueManagerProxy(String queueName){
+    public QueueManagerProxy(String queueName) throws ClassNotFoundException, TimeoutException, InterruptedException, IOException {
         this.queueName = queueName;
         this.urlServer = "localhost";
-        this.portServer = 1313;
+        this.portServer = 3001;
+        subscribe();
     }
 
     @Override

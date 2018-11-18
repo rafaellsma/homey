@@ -1,5 +1,7 @@
 package distribution;
 
-public enum OperationType {
+import java.io.Serializable;
+
+public enum OperationType implements Serializable {
     GET,PUT,SUBSCRIBE
 }
