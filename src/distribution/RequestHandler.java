@@ -5,8 +5,6 @@ import infrastructure.ServerRequestHandler;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import static distribution.OperationType.GET;
-import static distribution.OperationType.PUT;
 import static distribution.Marshaller.marshall;
 
 public class RequestHandler extends Thread {
@@ -26,20 +24,32 @@ public class RequestHandler extends Thread {
             Message m = request.getPacketBody().getMessage();
             QM.receive(m);
             try {
-                SRH.send(marshall(new ReplyPacket(QM.send(m.getHeader()))));
+                SRH.send(marshall(new ReplyPacket(QM.send(m.getHeader()), OperationType.PUT)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //TODO ADD REPLY PACKET
-        } else if (request.getPacketHeader().getOperation() == GET){
+        } else if (request.getPacketHeader().getOperation() == OperationType.GET){
             MessageHeader header = request.getPacketBody().getMessage().getHeader();
             Message message = QM.send(header);
             try {
-                SRH.send(marshall(new ReplyPacket(message)));
+                SRH.send(marshall(new ReplyPacket(message, OperationType.GET)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            //TODO ADD REPLY PACKET
+        } else if (request.getPacketHeader().getOperation() == OperationType.GETNEXT){
+            MessageHeader header = request.getPacketBody().getMessage().getHeader();
+            try {
+                Message message = QM.sendNext(header);
+                SRH.send(marshall(new ReplyPacket(message, OperationType.GETNEXT)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (NullPointerException e) {
+                try {
+                    SRH.send(marshall(new ReplyPacket(null, OperationType.LASTMESSAGE)));
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+            }
         } else {
             MessageHeader header = request.getPacketBody().getMessage().getHeader();
             QM.createQueue(header.getDestination());

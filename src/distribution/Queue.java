@@ -30,6 +30,7 @@ public class Queue {
 
     public void push(Message msg) {
         String nxt = genNextId();
+        msg.getHeader().setHash(nxt);
         next.put(nxt, "");
         next.put(last, nxt);
         last = nxt;

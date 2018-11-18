@@ -26,11 +26,13 @@ public class QueueManager {
         return queue.get(header.getHash());
     }
 
-    public Message sendNext(MessageHeader header) {
+    public Message sendNext(MessageHeader header) throws NullPointerException {
         String hash = header.getHash();
         Queue queue = queues.get(header.getDestination());
 
-        assert(!isLastMessage(header)): "Last message";
+        if(isLastMessage(header)) {
+            throw new NullPointerException();
+        }
         return queue.get(queue.getNext(hash));
     }
 }

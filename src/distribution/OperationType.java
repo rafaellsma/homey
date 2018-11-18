@@ -3,5 +3,5 @@ package distribution;
 import java.io.Serializable;
 
 public enum OperationType implements Serializable {
-    GET,PUT,SUBSCRIBE
+    GET,PUT,SUBSCRIBE,GETNEXT,LASTMESSAGE
 }
