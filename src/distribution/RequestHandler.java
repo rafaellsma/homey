@@ -53,7 +53,11 @@ public class RequestHandler extends Thread {
         } else {
             MessageHeader header = request.getPacketBody().getMessage().getHeader();
             QM.createQueue(header.getDestination());
-            //TODO ADD REPLY PACKET
+            try {
+                SRH.send(marshall(QM.sendLastMessage(header)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

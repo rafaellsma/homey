@@ -9,7 +9,7 @@ public class QueueManager {
     }
 
     public void createQueue(String queueName) {
-        queues.putIfAbsent(queueName, new Queue());
+        queues.putIfAbsent(queueName, new Queue(queueName));
     }
 
     public void receive(Message msg) {
@@ -18,6 +18,11 @@ public class QueueManager {
 
     public boolean isLastMessage(MessageHeader header) {
         return queues.get(header.getDestination()).getCurrent() == header.getHash();
+    }
+
+    public Message sendLastMessage(MessageHeader header) {
+        Queue queue = queues.get(header.getDestination());
+        return queue.get(queue.getCurrent());
     }
 
     public Message send(MessageHeader header) {

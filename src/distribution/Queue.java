@@ -10,6 +10,7 @@ public class Queue {
     private Random random = new Random();
     private int sze = 0;
     private int targetStringLength = 10;
+    private String name;
 
     private String genNextId() {
         StringBuilder buffer = new StringBuilder(targetStringLength);
@@ -24,9 +25,12 @@ public class Queue {
         return generatedString;
     }
 
-    public Queue() {
+    public Queue(String name) {
+        this.name = name;
         next.put(last, "");
-        messages.put(last, null);
+        Message msg = new Message();
+        msg.setHeader(new MessageHeader(name,""));
+        messages.put(last, msg);
     }
 
     public void push(Message msg) {
