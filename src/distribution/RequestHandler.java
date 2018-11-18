@@ -44,7 +44,7 @@ public class RequestHandler extends Thread {
                 e.printStackTrace();
             } catch (NullPointerException e) {
                 try {
-                    SRH.send(marshall(new ReplyPacket(null, OperationType.LASTMESSAGE)));
+                    SRH.send(marshall(new ReplyPacket(QM.sendLastMessage(header), OperationType.LASTMESSAGE)));
                 } catch (IOException e2) {
                     e2.printStackTrace();
                 }
@@ -53,7 +53,7 @@ public class RequestHandler extends Thread {
             MessageHeader header = request.getPacketBody().getMessage().getHeader();
             QM.createQueue(header.getDestination());
             try {
-                SRH.send(marshall(new ReplyPacket(QM.sendLastMessage(header), OperationType.SUBSCRIBE)));
+                SRH.send(marshall(new ReplyPacket(QM.sendLastMessage(header), OperationType.LASTMESSAGE)));
             } catch (IOException e) {
                 e.printStackTrace();
             }

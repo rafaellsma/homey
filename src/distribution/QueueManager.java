@@ -17,7 +17,7 @@ public class QueueManager {
     }
 
     public boolean isLastMessage(MessageHeader header) {
-        return queues.get(header.getDestination()).getCurrent() == header.getHash();
+        return queues.get(header.getDestination()).getCurrent().equals(header.getHash());
     }
 
     public Message sendLastMessage(MessageHeader header) {
