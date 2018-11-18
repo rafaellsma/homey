@@ -26,6 +26,7 @@ public class Queue {
 
     public Queue() {
         next.put(last, "");
+        messages.put(last, null);
     }
 
     public void push(Message msg) {
