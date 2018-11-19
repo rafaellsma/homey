@@ -24,8 +24,9 @@ public class QueueManagerProxy implements IQueueManager {
 
         crh.send(Marshaller.marshall(requestPacket(m, OperationType.PUT)));
 
+        ReplyPacket replyPacket = (ReplyPacket) Marshaller.unmarshall(crh.receive());
+
         crh.close();
-//        setHash((ReplyPacket) Marshaller.unmarshall(crh.receive()));
     }
 
     @Override
