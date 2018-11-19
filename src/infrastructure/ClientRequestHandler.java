@@ -46,4 +46,13 @@ public class ClientRequestHandler {
         return msgReceived;
 	}
 
+	public void close() {
+		try {
+			inFromServer.close();
+			outToServer.close();
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

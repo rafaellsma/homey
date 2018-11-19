@@ -39,6 +39,9 @@ public class RequestHandler extends Thread {
             MessageHeader header = request.getPacketBody().getMessage().getHeader();
             try {
                 Message message = QM.sendNext(header);
+                if (message == null)
+                SRH.send(marshall(new ReplyPacket(null, OperationType.LASTMESSAGE)));
+                else
                 SRH.send(marshall(new ReplyPacket(message, OperationType.GETNEXT)));
             } catch (IOException e) {
                 e.printStackTrace();

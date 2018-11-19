@@ -38,6 +38,7 @@ public class QueueManager {
         if(isLastMessage(header)) {
             throw new NullPointerException();
         }
-        return queue.get(queue.getNext(hash));
+        Message msg = queue.get(queue.getNext(hash));
+        return msg;
     }
 }

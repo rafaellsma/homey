@@ -24,6 +24,7 @@ public class QueueManagerProxy implements IQueueManager {
 
         crh.send(Marshaller.marshall(requestPacket(m, OperationType.PUT)));
 
+        crh.close();
 //        setHash((ReplyPacket) Marshaller.unmarshall(crh.receive()));
     }
 
@@ -34,9 +35,16 @@ public class QueueManagerProxy implements IQueueManager {
         crh.send(Marshaller.marshall(requestPacket("", OperationType.GETNEXT)));
 
         ReplyPacket reply = (ReplyPacket) Marshaller.unmarshall(crh.receive());
-        setHash(reply);
 
-        return reply.getMessage().getBody().getBody();
+        crh.close();
+
+        if (reply.getOperationType() != OperationType.LASTMESSAGE) {
+            setHash(reply);
+
+            return reply.getMessage().getBody().getBody();
+        } else {
+            return null;
+        }
     }
 
     private void subscribe() throws IOException, TimeoutException, ClassNotFoundException, InterruptedException {
@@ -45,10 +53,18 @@ public class QueueManagerProxy implements IQueueManager {
         crh.send(Marshaller.marshall(requestPacket("", OperationType.SUBSCRIBE)));
 
         setHash((ReplyPacket) Marshaller.unmarshall(crh.receive()));
+
+        crh.close();
     }
 
     private void setHash(ReplyPacket reply){
-        this.hash = reply.getMessage().getHeader().getHash();
+        Message msg = reply.getMessage();
+        try {
+            MessageHeader header = msg.getHeader();
+            this.hash = header.getHash();
+        }catch (NullPointerException w){
+            w.printStackTrace();
+        }
     }
 
     private RequestPacket requestPacket(String message, OperationType operationType){

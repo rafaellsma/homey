@@ -14,14 +14,12 @@ public class ServerRequestHandler {
 	private DataOutputStream outToClient;
 	
 	private Socket socket;
-	private ServerSocket serverSocket;
-	
+
 	private int sentMessageSize;
 	private int receivedMessageSize;
 	
-	public ServerRequestHandler(int port) throws IOException {
-		this.port = port;
-		this.serverSocket = new ServerSocket(port);	
+	public ServerRequestHandler(Socket socket) {
+		this.socket = socket;
 	}
 
 	public void send(byte[] msg) throws IOException {
@@ -31,16 +29,17 @@ public class ServerRequestHandler {
 		
 		outToClient.writeInt(sentMessageSize);
 		outToClient.write(msg, 0, sentMessageSize);
+		outToClient.close();
+		inFromClient.close();
+		socket.close();
 	}
 
 	public byte[] receive() throws IOException {
-		socket = serverSocket.accept();
 		inFromClient = new DataInputStream(socket.getInputStream());
 		
 		receivedMessageSize = inFromClient.readInt();
 		byte[] msg = new byte[receivedMessageSize];
 		inFromClient.read(msg, 0, receivedMessageSize);
-		
 		return msg;
 	}
 }
