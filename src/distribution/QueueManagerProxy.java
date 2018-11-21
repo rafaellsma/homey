@@ -11,64 +11,82 @@ public class QueueManagerProxy implements IQueueManager {
     private int portServer;
     private String hash;
 
-    public QueueManagerProxy(String queueName) throws ClassNotFoundException, TimeoutException, InterruptedException, IOException {
+    public QueueManagerProxy(String queueName) {
         this.queueName = queueName;
         this.urlServer = "localhost";
         this.portServer = 3001;
         subscribe();
     }
 
-    @Override
-    public void send(String m) throws IOException, InterruptedException, TimeoutException, ClassNotFoundException {
-        ClientRequestHandler crh =  new ClientRequestHandler(urlServer, portServer);
-
-        crh.send(Marshaller.marshall(requestPacket(m, OperationType.PUT)));
-
-        ReplyPacket replyPacket = (ReplyPacket) Marshaller.unmarshall(crh.receive());
-
-        crh.close();
+    public QueueManagerProxy(String queueName, String urlServer, int portServer) {
+        this.queueName = queueName;
+        this.urlServer = urlServer;
+        this.portServer = portServer;
+        subscribe();
     }
 
     @Override
-    public String receive() throws IOException, InterruptedException, TimeoutException, ClassNotFoundException {
-        ClientRequestHandler crh =  new ClientRequestHandler(urlServer, portServer);
+    public void send(String m) {
+        try {
+            ClientRequestHandler crh = new ClientRequestHandler(urlServer, portServer);
 
-        crh.send(Marshaller.marshall(requestPacket("", OperationType.GETNEXT)));
+            crh.send(Marshaller.marshall(requestPacket(m, OperationType.PUT)));
 
-        ReplyPacket reply = (ReplyPacket) Marshaller.unmarshall(crh.receive());
+            ReplyPacket replyPacket = (ReplyPacket) Marshaller.unmarshall(crh.receive());
 
-        crh.close();
-
-        if (reply.getOperationType() != OperationType.LASTMESSAGE) {
-            setHash(reply);
-
-            return reply.getMessage().getBody().getBody();
-        } else {
-            return null;
+            crh.close();
+        } catch (IOException | TimeoutException | ClassNotFoundException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
-    private void subscribe() throws IOException, TimeoutException, ClassNotFoundException, InterruptedException {
-        ClientRequestHandler crh =  new ClientRequestHandler(urlServer, portServer);
+    @Override
+    public String receive() {
+        try {
+            ClientRequestHandler crh = new ClientRequestHandler(urlServer, portServer);
 
-        crh.send(Marshaller.marshall(requestPacket("", OperationType.SUBSCRIBE)));
+            crh.send(Marshaller.marshall(requestPacket("", OperationType.GETNEXT)));
 
-        setHash((ReplyPacket) Marshaller.unmarshall(crh.receive()));
+            ReplyPacket reply = (ReplyPacket) Marshaller.unmarshall(crh.receive());
 
-        crh.close();
+            crh.close();
+
+            if (reply.getOperationType() != OperationType.LASTMESSAGE) {
+                setHash(reply);
+
+                return reply.getMessage().getBody().getBody();
+            }
+        } catch (IOException | TimeoutException | ClassNotFoundException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    private void setHash(ReplyPacket reply){
+    private void subscribe() {
+        ClientRequestHandler crh = null;
+        try {
+            crh = new ClientRequestHandler(urlServer, portServer);
+            crh.send(Marshaller.marshall(requestPacket("", OperationType.SUBSCRIBE)));
+
+            setHash((ReplyPacket) Marshaller.unmarshall(crh.receive()));
+
+            crh.close();
+        } catch (IOException | TimeoutException | ClassNotFoundException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setHash(ReplyPacket reply) {
         Message msg = reply.getMessage();
         try {
             MessageHeader header = msg.getHeader();
             this.hash = header.getHash();
-        }catch (NullPointerException w){
+        } catch (NullPointerException w) {
             w.printStackTrace();
         }
     }
 
-    private RequestPacket requestPacket(String message, OperationType operationType){
+    private RequestPacket requestPacket(String message, OperationType operationType) {
         RequestPacket packet = new RequestPacket();
         Message requestMessage = new Message();
 
